@@ -14,6 +14,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    // https://www.youtube.com/watch?v=JqmNsOKrymQ - EXAMPLE HOW TO USE THREAD ASK NATALIE
+
 
         EasySplashScreen config = new EasySplashScreen(SplashScreenActivity.this)
                 .withFullScreen()
@@ -33,9 +35,5 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         View easySplashScreen = config.create();
         setContentView(easySplashScreen);
-
-//        setContentView(easySplashScreenView);
-
     }
 }
-//                .withLogo(R.drawable.logo)
