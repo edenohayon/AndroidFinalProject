@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,12 +18,23 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+
 
 import java.util.ArrayList;
 
 import static android.view.Gravity.CENTER;
 
+
+/*
+dynamic buttons with table layout - may help
+https://www.youtube.com/watch?v=4MFzuP1F-xQ
+ */
+
 public class MainActivity extends AppCompatActivity {
+
+    public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
+
 
     private TableLayout tableLayout;
     private TableRow tableRow;
@@ -60,15 +72,18 @@ public class MainActivity extends AppCompatActivity {
         myDialog = new Dialog(this);
         isPopupWarningOn = false;
 
+//        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+//        setSupportActionBar(myToolbar);
+
     }
 
     private void showPopup() {
         TextView txtclose;
         Button btnFollow;
         myDialog.setContentView(R.layout.popup);
-        txtclose =(TextView) myDialog.findViewById(R.id.txtclose);
-        txtclose.setText("M");
-        btnFollow = (Button) myDialog.findViewById(R.id.btnfollow);
+        txtclose = myDialog.findViewById(R.id.txtclose);
+        txtclose.setText("X");
+        btnFollow = myDialog.findViewById(R.id.btnfollow);
 
         txtclose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +142,20 @@ public class MainActivity extends AppCompatActivity {
         items.add(button);
 
         // need to create new row
+
+
+        button.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        button.setText(inputVal);
+        double d  = (Math.random())*1000;
+        button.setId((int) d);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToItem(v);
+            }});
+
         if(itemsAdded == 0)
         {
             TableRow tableRowTmp = new TableRow(this);
@@ -137,17 +166,24 @@ public class MainActivity extends AppCompatActivity {
             tableRow = tableRowTmp;
 
         }
-
-        button.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.WRAP_CONTENT,
-                TableRow.LayoutParams.WRAP_CONTENT));
-        button.setText(inputVal);
-
         tableRow.addView(button);
         itemsAdded++;
         if(itemsAdded == NUM_COL)
             itemsAdded = 0;
 
+    }
+
+    public void goToItem(View view)
+    {
+        Intent intent = new Intent(this, ItemActivity.class);
+
+        int id =view.getId();
+        Log.d("debug", "goToItem: " + id);
+
+        String message = "" + id;
+
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 
 
