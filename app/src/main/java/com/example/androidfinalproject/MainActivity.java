@@ -1,5 +1,6 @@
 package com.example.androidfinalproject;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -10,6 +11,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private int itemsAdded;
 
     // for popup
-    Dialog myDialog;
+    private Dialog myDialog;
     boolean isPopupWarningOn;
 
     private final int NUM_COL = 3;
@@ -72,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         myDialog = new Dialog(this);
         isPopupWarningOn = false;
 
-//        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-//        setSupportActionBar(myToolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
 
     }
 
@@ -186,6 +189,39 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuItem menuAbout = menu.add("About");
+        MenuItem menuExit = menu.add("Exit");
+
+        menuAbout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.d("debug", "onMenuItemClick: " + item);
+                showAboutDialog();
+                return true;
+            }
+        });
+
+        menuExit.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.d("debug", "onMenuItemClick: " + item);
+                System.exit(0);
+                return true;
+            }
+        });
+        return true;
+    }
+
+    private void showAboutDialog()
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        //alertDialog.setIcon(R.drawable.document);
+        alertDialog.setTitle("About");
+        alertDialog.setMessage("Developed by\n\n Eden Ohayon and Natalie *complete in main activity* (c)");
+        alertDialog.show();
+    }
 
 
 }
