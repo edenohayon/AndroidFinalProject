@@ -36,7 +36,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static android.view.Gravity.CENTER;
@@ -49,7 +48,11 @@ public class ItemActivity extends AppCompatActivity {
 
     private static final String LACK_OF_INV_CHANNEL_ID = "lack";
     private static final String LACK_OF_INV_CHANNEL_NAME = "lack of inventory";
-    final int COL_NUM  = 4;
+
+    private static final String PANEL_ID = "panelID";
+    private static final String PANEL_NAME = "panelName";
+
+    final int COL_NUM  = 2;
 
     //until we get server
     //Item i = new Item(1, "panel", 1.2, 2);
@@ -61,7 +64,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private double newLen;
     private int newAmount;
-    private String serverPath;
+    private String panelId;
 
     private NotificationManager notificationManager;
     private static String CHANNEL_ID = "channel1";
@@ -72,6 +75,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private ImageButton addItem;
     private Context context;
+    private String itemName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +84,21 @@ public class ItemActivity extends AppCompatActivity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        serverPath = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        database = FirebaseDatabase.getInstance().getReference(serverPath); //Dont pass any path if you want root of the tree
+        panelId = intent.getStringExtra(PANEL_ID);
+        itemName = intent.getStringExtra(PANEL_NAME);
+
+        //remember if problem
+        database = FirebaseDatabase.getInstance().getReference("lengths").child(panelId);
 
       //  String name = database.get
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.textView);
-        textView.setText(serverPath);
+        textView.setText(itemName);
 
         myItems = new ArrayList<>();
-        myItems = getItemsByID(serverPath);
+        //myItems = getItemsByID(panelId);
 
-        populateTable();
+        //populateTable();
 
         popupDialog = new Dialog(this);
         addItemDialog = new Dialog(this);
@@ -119,53 +126,30 @@ public class ItemActivity extends AppCompatActivity {
         setupNotificationChannel();
 
         this.context = this.getBaseContext();
+        table = findViewById(R.id.tableID);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //attaching value event listener
+
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //clearing the previous artist list
                 myItems.clear();
                 table.removeAllViews();
-
-                //iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    Log.d("debug --------", "onDataChange: "+ postSnapshot.getValue());
-
-                    Lengths item = postSnapshot.getValue(Lengths.class);
-
-                   // Button btn = new Button(context);
-                   // btn.setText(item.getName());
-                    Log.d("debugA", "onDataChange: " +item.getLength());
-//                    btn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            goToItem(v);
-//                        }});
-                    //adding artist to the list
-                    myItems.add(item);
-                    //mayby revers items??
-
-
+                    Lengths len = postSnapshot.getValue(Lengths.class);
+                    myItems.add(len);
                 }
                 populateTable();
-                //creating adapter
-
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
-
-
         });
     }
 
@@ -179,7 +163,7 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void populateTable() {
-        table = findViewById(R.id.tableID);
+
 
         for (int row = 0; row != myItems.size(); row++) {
             TableRow tableRow = new TableRow(this);
@@ -187,6 +171,7 @@ public class ItemActivity extends AppCompatActivity {
                     TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.MATCH_PARENT,
                     1.0f));
+
             table.addView(tableRow);
 
             for (int col = 0; col != COL_NUM; col++){
@@ -220,12 +205,13 @@ public class ItemActivity extends AppCompatActivity {
 //                });
 
                 //todo - change to final
-                if(col == 3) {
+                if(col == 1) {
                     final int finalRow = row;
                     itemInfo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showPopup(finalRow);
+                           // itemInfo.setTag(myItems.get(FINAL_ROW).getId());
+                            showPopup(finalRow, myItems.get(FINAL_ROW).getId(), myItems.get(FINAL_ROW).getLength() );
                         }
                     });
                 }
@@ -248,7 +234,7 @@ public class ItemActivity extends AppCompatActivity {
         return 0;
     }
 
-    private void showPopup(final int row) {
+    private void showPopup(final int row, final String id, final double length) {
 
         popupDialog.setContentView(R.layout.itempopup);
 
@@ -274,8 +260,8 @@ public class ItemActivity extends AppCompatActivity {
                 //todo - save to server
                // myItems.get(row).setAmount(newAmount);
                 //todo - try find better solution
-                table.removeAllViews();
-                populateTable();
+//                table.removeAllViews();
+//                populateTable();
 
                 if(newAmount == 0)
                 {
@@ -283,18 +269,19 @@ public class ItemActivity extends AppCompatActivity {
 
                     //todo - build method that returns the messege to be sent by item
                    // HashMap<Lengths, Boolean> h = myItems.
-                    showNotification("ניהול מלאי", myItems.get(row).getLength() + " אזל במלאי");
+                    showNotification("ניהול מלאי", itemName + " " + myItems.get(row).getLength() + " אזל במלאי");
 
 
                 }
 
+                database.child(id).setValue(new Lengths(length,newAmount,id));
                 popupDialog.dismiss();
             }
         });
 
         //display number
         TextView num = popupDialog.findViewById(R.id.length);
-        int txt = myItems.get(row).getAmount();
+        String txt = "" +myItems.get(row).getAmount();
         num.setText(txt);
 
         //add button
@@ -470,10 +457,14 @@ public class ItemActivity extends AppCompatActivity {
 
                 newAmount = Integer.parseInt(amount);
                 newLen = Double.parseDouble(length);
-                //myItems.add( new Item("1","panel", newLen, newAmount));
-                //todo - find better solution
-                table.removeAllViews();
-                populateTable();
+                String newID = database.push().getKey();
+                Lengths l = new Lengths(newLen,newAmount ,newID);
+                database.child(newID).setValue(l);
+              //  myItems.add(l);
+
+//                //todo - find better solution
+//                table.removeAllViews();
+//                populateTable();
 
 
                 addItemDialog.dismiss();
@@ -485,13 +476,13 @@ public class ItemActivity extends AppCompatActivity {
 
     private String getColInfo(int row, int col) {
         if(col == 0)
-            return "" + myItems.get(row).getId();
-
-        if(col == 1)
             return "" + myItems.get(row).getLength();
 
-        if(col == 2)
+        if(col == 1)
             return "" + myItems.get(row).getAmount();
+
+//        if(col == 2)
+//            return "" + myItems.get(row).getAmount();
 
 //        if(col == 3)
 //            return ""+ myItems.get(row).getLengths().get(0).getAmount();

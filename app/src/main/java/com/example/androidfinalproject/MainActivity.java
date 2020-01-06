@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static android.view.Gravity.CENTER;
@@ -50,12 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
     private static final int COL_NUM = 3;
+    private static final String PANEL_ID = "panelID";
+    private static final String PANEL_NAME = "panelName";
 
 
     private TableLayout tableLayout;
     private TableRow tableRow;
     private ImageButton add;
-    private ArrayList<Button> items;
+    private List<Button> items;
+    private List<Panel> panel;
   //  private TableRow.LayoutParams lp;
     private Context context;
 
@@ -68,13 +73,17 @@ public class MainActivity extends AppCompatActivity {
     private final int NUM_COL = 3;
 
     private DatabaseReference database;
+    //private int listIndex = 0;
+
+    private ListView listViewPanels;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //currently holding only added items
-        items = new ArrayList<Button>();
+        items = new ArrayList<>();
         tableLayout = findViewById(R.id.tableLayout);
        // tableRow = findViewById(R.id.row0);
        // lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
@@ -94,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        database = FirebaseDatabase.getInstance().getReference("panels"); //Dont pass any path if you want root of the tree
+        database = FirebaseDatabase.getInstance().getReference("panel"); //Dont pass any path if you want root of the tree
 
         context = this.getBaseContext();
 
@@ -111,32 +120,34 @@ public class MainActivity extends AppCompatActivity {
 
                 //clearing the previous artist list
                 items.clear();
+//                panel.clear();
                 tableLayout.removeAllViews();
+//                listIndex = 0;
 
                 //iterating through all the nodes
+
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    Log.d("debug --------", "onDataChange: "+ postSnapshot.getValue());
 
 
-                    for (DataSnapshot child: dataSnapshot.getChildren()) {
-                        Log.d("loop ------- ", "onDataChange:  " + child.getValue().toString());
 
-
-                    Item item = postSnapshot.getValue(Item.class);
+                    final Panel item = postSnapshot.getValue(Panel.class);
+                  //  panel.add(item);
+                    final String itemName = item.getName();
 
                     Button btn = new Button(context);
-                    btn.setText(item.getName());
-                    Log.d("debugA", "onDataChange: " +item.getLengths().get(0));
+                    btn.setText(itemName);
+                  //  Log.d("debugA", "onDataChange: " +item.getLengths().get(0));
                     btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            goToItem(v);
+                            goToItem(v,item.getId());
                         }});
                     //adding artist to the list
                     items.add(btn);
                     //mayby revers items??
+                    btn.setTag(item.getId());
 
+                //    listIndex++;
 
                 }
                 populateTable();
@@ -186,12 +197,9 @@ public class MainActivity extends AppCompatActivity {
     private void showPopup() {
         TextView txtclose;
 
-        Button saveBtn;
         myDialog.setContentView(R.layout.popup);
         txtclose = myDialog.findViewById(R.id.txtclose);
         txtclose.setText("X");
-        saveBtn = myDialog.findViewById(R.id.btnfollow);
-
         txtclose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button saveBtn;
+        saveBtn = myDialog.findViewById(R.id.btnfollow);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,24 +252,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void addNewItem(String inputVal) {
+    private void addNewItem(final String inputVal) {
 
         Button button = new Button(this);
-
-
 
         button.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
         button.setText(inputVal);
-
+        final String id = database.push().getKey();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToItem(v);
+                goToItem(v,id);
             }});
 
-        String id = database.push().getKey();
+
+        Panel panel = new Panel(id, inputVal);
         button.setTag(id);
 
         if(itemsAdded == 0)
@@ -280,19 +289,30 @@ public class MainActivity extends AppCompatActivity {
             itemsAdded = 0;
 
         //addItem to server
-        database.child(id).setValue(inputVal);
+        database.child(id).setValue(panel);
 
     }
 
-    public void goToItem(View view)
+    public void goToItem(View view, String id)
     {
-        Intent intent = new Intent(this, ItemActivity.class);
+        //Intent intent = new Intent(this, ItemActivity.class);
 
-        String id = view.getTag().toString();
-        Log.d("debug", "goToItem: " + id);
+       // String txt = view.get
+//        int index = items.indexOf(view.getTag());
+//        Log.d("debug ------", "goToItem: nbnb "+ index);
+
+        String tagId = view.getTag().toString();
+
+        String panelID = view.getTag().toString();
+        String panelName = ((Button)view).getText().toString();
+        Log.d("debug", "goToItem: " + panelName);
 
 
-        intent.putExtra(EXTRA_MESSAGE, "panels/"+id);
+        Intent intent = new Intent(getApplicationContext(), ItemActivity.class);
+
+        intent.putExtra(PANEL_ID, panelID);
+        intent.putExtra(PANEL_NAME, panelName);
+
         startActivity(intent);
     }
 
@@ -326,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         //alertDialog.setIcon(R.drawable.document);
         alertDialog.setTitle("About");
-        alertDialog.setMessage("Developed by\n\n Eden Ohayon and Natalie *complete in main activity* (c)");
+        alertDialog.setMessage("Developed by\n\n Eden Ohayon and Natalie Eisenstadt (c)");
         alertDialog.show();
     }
 
