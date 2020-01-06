@@ -22,25 +22,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-
-        <TextView
-            android:id="@+id/length"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="center"
-            android:text="אורך"
-            android:textColor="#fff"
-            android:textStyle="bold" />
-
         <EditText
             android:id="@+id/lengthID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="left"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/length"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="אורך"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+
 
 
     </LinearLayout>
@@ -51,17 +52,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-
-        <TextView
-            android:id="@+id/amount"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="center"
-            android:text="כמות"
-            android:textColor="#fff"
-            android:textStyle="bold" />
-
         <EditText
             android:id="@+id/amountID"
             android:layout_width="wrap_content"
@@ -70,13 +60,26 @@
             android:ems="10"
             android:inputType="number" />
 
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="כמות"
+            android:textColor="#fff"
+            android:textStyle="bold" />
+
+
+
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/addWarningLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
 
 
     <Button

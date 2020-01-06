@@ -45,58 +45,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TableRow
-                android:id="@+id/row0"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <TableRow-->
+<!--                android:id="@+id/row0"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <Button
-                    android:id="@+id/button4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל פח 5" />
+<!--                <Button-->
+<!--                    android:id="@+id/button4"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל פח 5" />-->
 
-                <Button
-                    android:id="@+id/button5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל פח 7.5" />
+<!--                <Button-->
+<!--                    android:id="@+id/button5"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל פח 7.5" />-->
 
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל פח 10" />
-            </TableRow>
+<!--                <Button-->
+<!--                    android:id="@+id/button3"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל פח 10" />-->
+<!--            </TableRow>-->
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <Button
-                    android:id="@+id/button7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל אלומ' 5" />
+<!--                <Button-->
+<!--                    android:id="@+id/button7"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל אלומ' 5" />-->
 
-                <Button
-                    android:id="@+id/button8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל אלו' 7.5" />
+<!--                <Button-->
+<!--                    android:id="@+id/button8"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל אלו' 7.5" />-->
 
-                <Button
-                    android:id="@+id/button6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="goToItem"
-                    android:text="פנל אלומ' 10" />
-            </TableRow>
+<!--                <Button-->
+<!--                    android:id="@+id/button6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:onClick="goToItem"-->
+<!--                    android:text="פנל אלומ' 10" />-->
+<!--            </TableRow>-->
 
         </TableLayout>
 

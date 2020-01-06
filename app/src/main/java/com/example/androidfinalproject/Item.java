@@ -1,46 +1,55 @@
 package com.example.androidfinalproject;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class Item {
 
-    private int id;
+    private String id;
     private String name;
-    private double length;
-    private int amount;
+    private HashMap<Lengths, Boolean> lengths;
+    private int counter = 0;
 
+    public Item() {
+        //this constructor is required
+        counter++;
+    }
 
-
-    public Item(int id, String name, double length, int amount) {
+    public Item(String id, String name, HashMap<Lengths, Boolean> lengths) {
         this.id = id;
         this.name = name;
-        this.length = length;
-        this.amount = amount;
+        this.lengths = lengths;
+        counter++;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLength(float length) {
-        this.length = length;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public double getLength() {
-        return length;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getAmount() {
-        return amount;
+    public HashMap<Lengths, Boolean> getLengths() {
+        return lengths;
     }
+
+    public void setLengths(HashMap<Lengths, Boolean> lengths) {
+        this.lengths = lengths;
+    }
+    public int getCounter(){
+        return this.counter;
+    }
+
+
 }
+
+

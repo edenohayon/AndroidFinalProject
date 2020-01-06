@@ -1,5 +1,6 @@
 package com.example.androidfinalproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,8 +22,17 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -37,13 +47,15 @@ https://www.youtube.com/watch?v=4MFzuP1F-xQ
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
+    private static final int COL_NUM = 3;
 
 
     private TableLayout tableLayout;
     private TableRow tableRow;
     private ImageButton add;
     private ArrayList<Button> items;
-    private TableRow.LayoutParams lp;
+  //  private TableRow.LayoutParams lp;
+    private Context context;
 
     private int itemsAdded;
 
@@ -52,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     boolean isPopupWarningOn;
 
     private final int NUM_COL = 3;
+
+    private DatabaseReference database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,15 +92,98 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
+        database = FirebaseDatabase.getInstance().getReference("panels"); //Dont pass any path if you want root of the tree
+
+        context = this.getBaseContext();
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //attaching value event listener
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //clearing the previous artist list
+                items.clear();
+                tableLayout.removeAllViews();
+
+                //iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    //getting artist
+                    Log.d("debug --------", "onDataChange: "+ postSnapshot.getValue());
+
+                    Item item = postSnapshot.getValue(Item.class);
+
+                    Button btn = new Button(context);
+                    btn.setText(item.getName());
+                    Log.d("debugA", "onDataChange: " +item.getLengths().get(0));
+                    btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goToItem(v);
+                        }});
+                    //adding artist to the list
+                    items.add(btn);
+                    //mayby revers items??
+
+
+                }
+                populateTable();
+                //creating adapter
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
+        });
+    }
+
+    private void populateTable() {
+        Log.d("debug --------", "populateTable: in populat");
+        tableLayout = findViewById(R.id.tableLayout);
+        int row = 0, col = 0;
+        while( row < items.size() ) {
+            TableRow tableRow = new TableRow(this);
+            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    1.0f));
+            tableLayout.addView(tableRow);
+            col = 0;
+
+            while(col < NUM_COL && row < items.size() )
+            {
+
+                items.get(row).setLayoutParams(new TableRow.LayoutParams(
+                        TableRow.LayoutParams.WRAP_CONTENT,
+                        TableRow.LayoutParams.WRAP_CONTENT,
+                        1.0f));
+
+
+                tableRow.addView(items.get(row));
+                row++;
+                col++;
+                //buttons[row][col] = btn;
+            }
+        }
     }
 
     private void showPopup() {
         TextView txtclose;
-        Button btnFollow;
+
+        Button saveBtn;
         myDialog.setContentView(R.layout.popup);
         txtclose = myDialog.findViewById(R.id.txtclose);
         txtclose.setText("X");
-        btnFollow = myDialog.findViewById(R.id.btnfollow);
+        saveBtn = myDialog.findViewById(R.id.btnfollow);
 
         txtclose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnFollow.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -142,22 +239,21 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = new Button(this);
 
-        items.add(button);
-
-        // need to create new row
 
 
         button.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
         button.setText(inputVal);
-        double d  = (Math.random())*1000;
-        button.setId((int) d);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToItem(v);
             }});
+
+        String id = database.push().getKey();
+        button.setTag(id);
 
         if(itemsAdded == 0)
         {
@@ -171,8 +267,13 @@ public class MainActivity extends AppCompatActivity {
         }
         tableRow.addView(button);
         itemsAdded++;
+        items.add(button);
+
         if(itemsAdded == NUM_COL)
             itemsAdded = 0;
+
+        //addItem to server
+        database.child(id).setValue(inputVal);
 
     }
 
@@ -180,12 +281,11 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this, ItemActivity.class);
 
-        int id =view.getId();
+        String id = view.getTag().toString();
         Log.d("debug", "goToItem: " + id);
 
-        String message = "" + id;
 
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_MESSAGE, "panels/"+id);
         startActivity(intent);
     }
 
