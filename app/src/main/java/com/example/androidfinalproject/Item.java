@@ -7,19 +7,19 @@ public class Item {
 
     private String id;
     private String name;
-    private HashMap<Lengths, Boolean> lengths;
-    private int counter = 0;
+    private List<Lengths> lengths;
+   // private int counter = 0;
 
     public Item() {
         //this constructor is required
-        counter++;
+       // counter++;
     }
 
-    public Item(String id, String name, HashMap<Lengths, Boolean> lengths) {
+    public Item(String id, String name, List<Lengths> lengths) {
         this.id = id;
         this.name = name;
         this.lengths = lengths;
-        counter++;
+      //  counter++;
     }
 
     public String getId() {
@@ -38,16 +38,16 @@ public class Item {
         this.name = name;
     }
 
-    public HashMap<Lengths, Boolean> getLengths() {
+    public List<Lengths> getLengths() {
         return lengths;
     }
 
-    public void setLengths(HashMap<Lengths, Boolean> lengths) {
+    public void setLengths(List<Lengths> lengths) {
         this.lengths = lengths;
     }
-    public int getCounter(){
-        return this.counter;
-    }
+//    public int getCounter(){
+//        return this.counter;
+//    }
 
 
 }

@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.view.Gravity.CENTER;
 
@@ -52,7 +53,7 @@ public class ItemActivity extends AppCompatActivity {
 
     //until we get server
     //Item i = new Item(1, "panel", 1.2, 2);
-    private ArrayList<Lengths> myItems;
+    private List<Lengths> myItems;
 
     private Dialog popupDialog, addItemDialog;
     private TableLayout table;
