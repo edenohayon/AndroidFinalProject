@@ -1,9 +1,7 @@
 package com.example.androidfinalproject;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -23,23 +21,14 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.widget.Toolbar;
-
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import static android.view.Gravity.CENTER;
 
 
@@ -51,19 +40,18 @@ https://www.youtube.com/watch?v=4MFzuP1F-xQ
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
-    private static final int COL_NUM = 3;
+
     private static final String PANEL_ID = "panelID";
     private static final String PANEL_NAME = "panelName";
 
 
+    //layout virables
     private TableLayout tableLayout;
     private TableRow tableRow;
     private ImageButton add;
     private List<Button> items;
     private List<Panel> panel;
-  //  private TableRow.LayoutParams lp;
     private Context context;
-
     private int itemsAdded;
 
     // for popup
