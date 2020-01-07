@@ -30,7 +30,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-<!--        <activity android:name=".MainActivity" />-->
+        <!--        <activity android:name=".MainActivity" />-->
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.example.androidfinalproject.DATABASE_CHANGED"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
+
+
 
 </manifest>

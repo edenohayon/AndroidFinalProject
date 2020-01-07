@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,8 +42,8 @@ https://www.youtube.com/watch?v=4MFzuP1F-xQ
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
-
+    //public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
+    private final int NUM_COL = 3;
     private static final String PANEL_ID = "panelID";
     private static final String PANEL_NAME = "panelName";
 
@@ -58,23 +61,24 @@ public class MainActivity extends AppCompatActivity {
     private Dialog myDialog;
     boolean isPopupWarningOn;
 
-    private final int NUM_COL = 3;
-
     private DatabaseReference database;
-    //private int listIndex = 0;
 
-    private ListView listViewPanels;
+    //for broadcast receiver
+    private MyReceiver mReceiver;
+    private IntentFilter intentFilter;
+
+    //private int listIndex = 0;
+    //private ListView listViewPanels;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //currently holding only added items
         items = new ArrayList<>();
         tableLayout = findViewById(R.id.tableLayout);
-       // tableRow = findViewById(R.id.row0);
-       // lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+
         itemsAdded = 0;
 
         add = findViewById(R.id.addBtn);
@@ -95,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
 
         context = this.getBaseContext();
 
+        // create the Broadcast Receiver
+        mReceiver = new MyReceiver();
+
+        // Define the IntentFilter for battery change.
+        intentFilter = new IntentFilter(MyReceiver.ACTION_DATABASE_CHANGED);
+
+        // register the receiver with the filter
+        registerReceiver(mReceiver, intentFilter);
+
 
     }
 
@@ -106,40 +119,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //clearing the previous artist list
+                //clearing the previous items list and table
                 items.clear();
-//                panel.clear();
                 tableLayout.removeAllViews();
-//                listIndex = 0;
 
                 //iterating through all the nodes
-
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
-
-
                     final Panel item = postSnapshot.getValue(Panel.class);
-                  //  panel.add(item);
                     final String itemName = item.getName();
 
                     Button btn = new Button(context);
                     btn.setText(itemName);
-                  //  Log.d("debugA", "onDataChange: " +item.getLengths().get(0));
                     btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             goToItem(v,item.getId());
                         }});
-                    //adding artist to the list
-                    items.add(btn);
-                    //mayby revers items??
-                    btn.setTag(item.getId());
 
-                //    listIndex++;
+                    items.add(btn);
+                    //todo - maybe revers items??
+                    btn.setTag(item.getId());
 
                 }
                 populateTable();
-                //creating adapter
 
             }
 
@@ -147,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-
 
         });
     }
@@ -177,18 +179,17 @@ public class MainActivity extends AppCompatActivity {
                 tableRow.addView(items.get(row));
                 row++;
                 col++;
-                //buttons[row][col] = btn;
             }
         }
     }
 
     private void showPopup() {
-        TextView txtclose;
+        TextView txtClose;
 
         myDialog.setContentView(R.layout.popup);
-        txtclose = myDialog.findViewById(R.id.txtclose);
-        txtclose.setText("X");
-        txtclose.setOnClickListener(new View.OnClickListener() {
+        txtClose = myDialog.findViewById(R.id.txtclose);
+        txtClose.setText("X");
+        txtClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myDialog.dismiss();
@@ -237,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
         myDialog.show();
 
 
-
     }
 
     private void addNewItem(final String inputVal) {
@@ -247,7 +247,9 @@ public class MainActivity extends AppCompatActivity {
         button.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
+
         button.setText(inputVal);
+
         final String id = database.push().getKey();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,10 +257,10 @@ public class MainActivity extends AppCompatActivity {
                 goToItem(v,id);
             }});
 
-
         Panel panel = new Panel(id, inputVal);
         button.setTag(id);
 
+        //makes sure only NUM_COL items per row
         if(itemsAdded == 0)
         {
             TableRow tableRowTmp = new TableRow(this);
@@ -278,23 +280,16 @@ public class MainActivity extends AppCompatActivity {
 
         //addItem to server
         database.child(id).setValue(panel);
+        //send broadcast that item added seccefully
+        context.sendBroadcast(new Intent(MyReceiver.ACTION_DATABASE_CHANGED));
 
     }
 
     public void goToItem(View view, String id)
     {
-        //Intent intent = new Intent(this, ItemActivity.class);
-
-       // String txt = view.get
-//        int index = items.indexOf(view.getTag());
-//        Log.d("debug ------", "goToItem: nbnb "+ index);
-
-        String tagId = view.getTag().toString();
-
         String panelID = view.getTag().toString();
         String panelName = ((Button)view).getText().toString();
         Log.d("debug", "goToItem: " + panelName);
-
 
         Intent intent = new Intent(getApplicationContext(), ItemActivity.class);
 
@@ -332,10 +327,18 @@ public class MainActivity extends AppCompatActivity {
     private void showAboutDialog()
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        //alertDialog.setIcon(R.drawable.document);
         alertDialog.setTitle("About");
         alertDialog.setMessage("Developed by\n\n Eden Ohayon and Natalie Eisenstadt (c)");
         alertDialog.show();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        // unregister the receiver
+        unregisterReceiver(mReceiver);
     }
 
 

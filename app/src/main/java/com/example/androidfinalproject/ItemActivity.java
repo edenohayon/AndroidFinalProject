@@ -1,6 +1,5 @@
 package com.example.androidfinalproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -46,36 +45,37 @@ import static android.view.Gravity.CENTER;
 
 public class ItemActivity extends AppCompatActivity {
 
-    private static final String LACK_OF_INV_CHANNEL_ID = "lack";
-    private static final String LACK_OF_INV_CHANNEL_NAME = "lack of inventory";
-
     private static final String PANEL_ID = "panelID";
     private static final String PANEL_NAME = "panelName";
 
-    final int COL_NUM  = 2;
-
-    //until we get server
-    //Item i = new Item(1, "panel", 1.2, 2);
-    private List<Lengths> myItems;
-
-    private Dialog popupDialog, addItemDialog;
-    private TableLayout table;
-    private boolean isPopupWarningOn;
-
-    private double newLen;
-    private int newAmount;
-    private String panelId;
-
-    private NotificationManager notificationManager;
     private static String CHANNEL_ID = "channel1";
     private static String CHANNEL_NAME = "Channel 1 Demo";
     private static int notificationId = 1;
 
+    private final int COL_NUM  = 2;
+
+
+    private List<Lengths> myItems;
+
+    //popup
+    private Dialog popupDialog, addItemDialog;
+    private boolean isPopupWarningOn;
+
+    //layout virables
+    private TableLayout table;
+    private ImageButton addItem;
+
+    //item info
+    private double newLen;
+    private int newAmount;
+    private String panelId;
+    private String itemName;
+
+    private NotificationManager notificationManager;
+
     private DatabaseReference database;
 
-    private ImageButton addItem;
     private Context context;
-    private String itemName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,19 +87,16 @@ public class ItemActivity extends AppCompatActivity {
         panelId = intent.getStringExtra(PANEL_ID);
         itemName = intent.getStringExtra(PANEL_NAME);
 
-        //remember if problem
         database = FirebaseDatabase.getInstance().getReference("lengths").child(panelId);
 
-      //  String name = database.get
+
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.textView);
         textView.setText(itemName);
 
         myItems = new ArrayList<>();
-        //myItems = getItemsByID(panelId);
 
-        //populateTable();
-
+        //for popup
         popupDialog = new Dialog(this);
         addItemDialog = new Dialog(this);
         isPopupWarningOn = false;
@@ -123,10 +120,10 @@ public class ItemActivity extends AppCompatActivity {
             }
         });
 
-        setupNotificationChannel();
-
         this.context = this.getBaseContext();
         table = findViewById(R.id.tableID);
+
+        setupNotificationChannel();
 
     }
 
@@ -153,14 +150,6 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<Lengths> getItemsByID(String id) {
-        //todo - get data from server
-        ArrayList<Lengths> ret = new ArrayList<>();
-
-
-        return ret;
-
-    }
 
     private void populateTable() {
 
@@ -194,47 +183,23 @@ public class ItemActivity extends AppCompatActivity {
                 // Make text not clip on small buttons
                 itemInfo.setPadding(0, 0, 0, 0);
 
-             //   itemInfo.setBackgroundColor(getColBGColor(col));
-
-//                itemInfo.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        //todo - edit text
-//                        Log.d("debug", "onClick: click");
-//                    }
-//                });
-
                 //todo - change to final
                 if(col == 1) {
                     final int finalRow = row;
                     itemInfo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           // itemInfo.setTag(myItems.get(FINAL_ROW).getId());
-                            showPopup(finalRow, myItems.get(FINAL_ROW).getId(), myItems.get(FINAL_ROW).getLength() );
+                            showUpdatePopup(finalRow, myItems.get(FINAL_ROW).getId(), myItems.get(FINAL_ROW).getLength() );
                         }
                     });
                 }
 
                 tableRow.addView(itemInfo);
-                //buttons[row][col] = itemInfo;
             }
         }
     }
 
-    private int getColBGColor(int col) {
-        if(col == 0)
-            return ContextCompat.getColor(this,R.color.col0);
-        if(col == 1)
-            return ContextCompat.getColor(this,R.color.col1);
-        if(col == 2)
-            return ContextCompat.getColor(this,R.color.col2);
-        if(col == 3)
-            return ContextCompat.getColor(this,R.color.col3);
-        return 0;
-    }
-
-    private void showPopup(final int row, final String id, final double length) {
+    private void showUpdatePopup(final int row, final String id, final double length) {
 
         popupDialog.setContentView(R.layout.itempopup);
 
@@ -257,11 +222,6 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TextView num = popupDialog.findViewById(R.id.length);
                 int newAmount = Integer.parseInt(num.getText().toString());
-                //todo - save to server
-               // myItems.get(row).setAmount(newAmount);
-                //todo - try find better solution
-//                table.removeAllViews();
-//                populateTable();
 
                 if(newAmount == 0)
                 {
@@ -270,7 +230,6 @@ public class ItemActivity extends AppCompatActivity {
                     //todo - build method that returns the messege to be sent by item
                    // HashMap<Lengths, Boolean> h = myItems.
                     showNotification("ניהול מלאי", itemName + " " + myItems.get(row).getLength() + " אזל במלאי");
-
 
                 }
 
@@ -360,52 +319,6 @@ public class ItemActivity extends AppCompatActivity {
     }
 
 
-
-
-//    private void setupNotificationChannels() {
-//
-//        notificationManager = (NotificationManager ) getSystemService (NOTIFICATION_SERVICE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O )
-//        {
-//            if (notificationManager.getNotificationChannel(LACK_OF_INV_CHANNEL_ID) == null) {
-//                NotificationChannel notificationChannel = new NotificationChannel(
-//                        LACK_OF_INV_CHANNEL_ID,
-//                        LACK_OF_INV_CHANNEL_NAME,
-//                        NotificationManager.IMPORTANCE_DEFAULT);
-//                notificationManager.createNotificationChannel(notificationChannel);
-//            }
-//
-//            //Notification notification = new NotificationCompat.Builder(this, LACK_OF_INV_CHANNEL_ID);
-//        }
-//
-//
-//    }
-//
-//    public void showLackOfInvNotification(String notificationTitle, String notificationText)
-//    {
-//       // Intent intent = new Intent(this, ItemActivity.class);
-//       // PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
-//
-//        // Build Notification with NotificationCompat.Builder
-//        // on Build.VERSION < Oreo the notification avoid the CHANEL_ID
-//        Notification notification = new NotificationCompat.Builder(this, LACK_OF_INV_CHANNEL_ID)
-//               // .setSmallIcon(R.mipmap.logo)  //Set the icon
-//                .setContentTitle(notificationTitle)         //Set the title of notification
-//                .setContentText(notificationText)           //Set the text for notification
-//                //.setContentIntent(pendingIntent)            // Starts Intent when notification clicked
-//                //.setOngoing(true)                         // stick notification
-//                .setAutoCancel(true)                        // close notification when clicked
-//                .build();
-//
-//        // Send the notification to the device Status bar.
-//        notificationManager.notify(lackNotificationId, notification);
-//
-//       // lackNotificationId++;  // for multiple(grouping) notifications on the same chanel
-//    }
-
-
-
     private void showAddItemPopup(View view) {
 
         addItemDialog.setContentView(R.layout.add_item);
@@ -418,6 +331,7 @@ public class ItemActivity extends AppCompatActivity {
                 addItemDialog.dismiss();
             }
         });
+
         Button save;
         save = addItemDialog.findViewById(R.id.btnfollow);
         save.setOnClickListener(new View.OnClickListener() {
@@ -460,12 +374,6 @@ public class ItemActivity extends AppCompatActivity {
                 String newID = database.push().getKey();
                 Lengths l = new Lengths(newLen,newAmount ,newID);
                 database.child(newID).setValue(l);
-              //  myItems.add(l);
-
-//                //todo - find better solution
-//                table.removeAllViews();
-//                populateTable();
-
 
                 addItemDialog.dismiss();
             }
@@ -480,12 +388,7 @@ public class ItemActivity extends AppCompatActivity {
 
         if(col == 1)
             return "" + myItems.get(row).getAmount();
-
-//        if(col == 2)
-//            return "" + myItems.get(row).getAmount();
-
-//        if(col == 3)
-//            return ""+ myItems.get(row).getLengths().get(0).getAmount();
+        
         return "";
 
     }
