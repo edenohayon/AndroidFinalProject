@@ -7,7 +7,7 @@
     android:padding="5dp"
     android:layout_gravity="center">
     <TextView
-        android:id="@+id/txtclose"
+        android:id="@+id/txtclose1"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:textColor="#fff"
@@ -19,14 +19,15 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
 
         <Button
-            android:id="@+id/reduce"
+            android:id="@+id/delete"
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="-"
+            android:text="מחק מוצר"
             android:layout_marginTop="25dp"
             android:layout_gravity="center_horizontal"
             android:textColor="#fff"
@@ -45,11 +46,11 @@
             android:textSize="20dp"/>
 
         <Button
-            android:id="@+id/add"
+            android:id="@+id/edit"
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="+"
+            android:text="ערוך מוצר"
             android:layout_marginTop="25dp"
             android:layout_gravity="center_horizontal"
             android:textColor="#fff"
@@ -59,18 +60,6 @@
 
     </LinearLayout>
 
-
-    <Button
-        android:id="@+id/btnfollow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="שמור"
-
-        android:layout_marginTop="25dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#fff"
-        android:background="@drawable/costum_button"
-        android:textSize="20dp"/>
 
 
 </LinearLayout>

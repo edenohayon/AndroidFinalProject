@@ -6,7 +6,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private int itemsAdded;
 
     // for popup
-    private Dialog myDialog;
+    private Dialog myDialog, editDialog;
     boolean isPopupWarningOn;
 
     private DatabaseReference database;
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         myDialog = new Dialog(this);
+        editDialog = new Dialog(this);
         isPopupWarningOn = false;
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -107,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         // register the receiver with the filter
         registerReceiver(mReceiver, intentFilter);
-
 
     }
 
@@ -130,11 +134,17 @@ public class MainActivity extends AppCompatActivity {
                     final String itemName = item.getName();
 
                     Button btn = new Button(context);
+                   // btn.setBackgroundColor(Color.rgb(141,216,141));
+                    btn.setBackgroundResource(R.drawable.costum_button);
+
+
                     btn.setText(itemName);
                     btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            goToItem(v,item.getId());
+                            showSelectPopup(v,item.getId());
+                          // goToItem(v,item.getId());
+
                         }});
 
                     items.add(btn);
@@ -198,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button saveBtn;
         saveBtn = myDialog.findViewById(R.id.btnfollow);
+     //   saveBtn.setBackgroundColor(Color.rgb(141,216,141));
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
 
+
         button.setText(inputVal);
 
         final String id = database.push().getKey();
@@ -287,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToItem(View view, String id)
     {
+
+       // showSelectPopup();
+
         String panelID = view.getTag().toString();
         String panelName = ((Button)view).getText().toString();
         Log.d("debug", "goToItem: " + panelName);
@@ -341,5 +356,45 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+    private void showSelectPopup(final View view, final String id) {
+
+        editDialog.setContentView(R.layout.selectpopup);
+        TextView txtClose;
+        txtClose = editDialog.findViewById(R.id.txtclose1);
+        txtClose.setText("X");
+        txtClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editDialog.dismiss();
+            }
+        });
+
+        //edit button
+        Button editItem = editDialog.findViewById(R.id.edit);
+        editItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToItem(view,id);
+
+            }
+        });
+        editDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        editDialog.show();
+//        //reduce button
+//        Button reduce = popupDialog.findViewById(R.id.reduce);
+//        reduce.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TextView num = popupDialog.findViewById(R.id.length);
+//
+//                int editedNum = Integer.parseInt(num.getText().toString())-1;
+//                if(editedNum != -1)
+//                    num.setText(editedNum+"");
+//            }
+//        });
+
+
+
+    }
 
 }

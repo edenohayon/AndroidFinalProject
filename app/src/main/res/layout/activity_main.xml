@@ -21,18 +21,21 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/main" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="22dp"
-        android:minWidth="100sp"
-        android:minHeight="100sp" />
+<!--    <Space-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="22dp"-->
+<!--        android:minWidth="100sp"-->
+<!--        android:minHeight="100sp" />-->
 
     <ImageButton
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_add"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/add_btn_foreground"
+
+        android:contentDescription="TODO"
+        android:background="@drawable/add_btn_background"
+        tools:ignore="VectorDrawableCompat" />
 
 
 
@@ -42,65 +45,21 @@
         android:layout_gravity="center"
         >
 
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:layout_width="wrap_content"
+
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-<!--            <TableRow-->
-<!--                android:id="@+id/row0"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-<!--                <Button-->
-<!--                    android:id="@+id/button4"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל פח 5" />-->
 
-<!--                <Button-->
-<!--                    android:id="@+id/button5"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל פח 7.5" />-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/button3"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל פח 10" />-->
-<!--            </TableRow>-->
-
-<!--            <TableRow-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/button7"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל אלומ' 5" />-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/button8"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל אלו' 7.5" />-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/button6"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:onClick="goToItem"-->
-<!--                    android:text="פנל אלומ' 10" />-->
-<!--            </TableRow>-->
-
-        </TableLayout>
+            </TableLayout>
+        </ScrollView>
 
     </RelativeLayout>
 

@@ -22,8 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -123,8 +125,10 @@ public class ItemActivity extends AppCompatActivity {
         this.context = this.getBaseContext();
         table = findViewById(R.id.tableID);
 
-        setupNotificationChannel();
+       // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
 
+        setupNotificationChannel();
+      // populateTable();
     }
 
     @Override
@@ -153,6 +157,9 @@ public class ItemActivity extends AppCompatActivity {
 
     private void populateTable() {
 
+       // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
+
+        setTitle();
 
         for (int row = 0; row != myItems.size(); row++) {
             TableRow tableRow = new TableRow(this);
@@ -172,13 +179,17 @@ public class ItemActivity extends AppCompatActivity {
                 itemInfo.setLayoutParams(new TableRow.LayoutParams(
                         TableRow.LayoutParams.MATCH_PARENT,
                         TableRow.LayoutParams.MATCH_PARENT,
-                        1.0f));
+                        2.0f));
+              //  itemInfo.setLayoutParams(new HorizontalScroll.);
 
                 String info = getColInfo(row, col);
+                //Log.d("info", info);
                 itemInfo.setText(info);
+                itemInfo.setTextSize(20f);
                 itemInfo.setBackgroundResource(R.drawable.cell_shape);
                 itemInfo.setTextColor(Color.BLACK);
                 itemInfo.setGravity(CENTER);
+                //itemInfo.measure(0,0);
 
                 // Make text not clip on small buttons
                 itemInfo.setPadding(0, 0, 0, 0);
@@ -195,8 +206,11 @@ public class ItemActivity extends AppCompatActivity {
                 }
 
                 tableRow.addView(itemInfo);
+
+
             }
         }
+       // scrollview.addView(table);
     }
 
     private void showUpdatePopup(final int row, final String id, final double length) {
@@ -376,10 +390,13 @@ public class ItemActivity extends AppCompatActivity {
                 database.child(newID).setValue(l);
 
                 addItemDialog.dismiss();
+               // table.addView();
             }
         });
         addItemDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         addItemDialog.show();
+
+        //populateTable();
     }
 
     private String getColInfo(int row, int col) {
@@ -391,5 +408,43 @@ public class ItemActivity extends AppCompatActivity {
         
         return "";
 
+    }
+
+    public void setTitle()
+    {
+
+            TableRow tableRow = new TableRow(this);
+            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    1.0f));
+            tableRow.setBackgroundColor(Color.rgb(141,216,141));
+
+            table.addView(tableRow);
+
+            for (int col = 0; col < 2; col++)
+            {
+
+                final TextView itemInfo = new TextView(this);
+
+                itemInfo.setLayoutParams(new TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        2.0f));
+                if(col == 0)
+                  itemInfo.setText("אורך");
+                else
+                  itemInfo.setText("כמות");
+                itemInfo.setTextSize(20f);
+                itemInfo.setBackgroundResource(R.drawable.cell_title);
+                itemInfo.setTextColor(Color.BLACK);
+                itemInfo.setGravity(CENTER);
+                //itemInfo.measure(0,0);
+
+                // Make text not clip on small buttons
+                itemInfo.setPadding(0, 0, 0, 0);
+
+                tableRow.addView(itemInfo);
+            }
     }
 }
