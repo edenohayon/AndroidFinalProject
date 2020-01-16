@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg2"
+    android:background="@drawable/finalbg"
     android:orientation="vertical"
     tools:context=".MainActivity"
     tools:layout_editor_absoluteY="25dp">
@@ -15,29 +15,34 @@
         layout="@layout/toolbar" />
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/main" />
-
-<!--    <Space-->
+    <!--    <Space-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="22dp"-->
 <!--        android:minWidth="100sp"-->
 <!--        android:minHeight="100sp" />-->
 
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="right"-->
+<!--        app:srcCompat="@drawable/finalbg" />-->
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+
     <ImageButton
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/add_btn_foreground"
+        android:layout_gravity="right"
 
-        android:contentDescription="TODO"
         android:background="@drawable/add_btn_background"
+        android:contentDescription="TODO"
+        app:srcCompat="@drawable/add_btn_foreground"
         tools:ignore="VectorDrawableCompat" />
-
-
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -50,12 +55,19 @@
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
+            >
 
             <TableLayout
                 android:id="@+id/tableLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="50dp"
+                android:stretchColumns="*"
+                android:layout_alignParentTop="true">
 
 
             </TableLayout>

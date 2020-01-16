@@ -7,4 +7,7 @@
     <color name="col1">#F2FEB204</color>
     <color name="col2">#F2FF8503</color>
     <color name="col3">#F2D53600</color>
+    <color name="primary">#212121</color>
+    <color name="base">#3E1A03</color>
+    <color name="ourGreen">#6A9802</color>
 </resources>

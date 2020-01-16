@@ -24,11 +24,12 @@ public class SplashScreenActivity extends AppCompatActivity {
             {
                 try {
                     sleep(2000);
+                    finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 finally {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
             }
         };

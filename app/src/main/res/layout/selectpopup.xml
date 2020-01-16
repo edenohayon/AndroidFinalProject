@@ -17,45 +17,47 @@
         android:gravity="center"/>
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+
         android:layout_marginTop="40dp">
 
         <Button
             android:id="@+id/delete"
-            android:layout_width="10dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="מחק מוצר"
             android:layout_marginTop="25dp"
             android:layout_gravity="center_horizontal"
             android:textColor="#fff"
-            android:background="@drawable/costum_button"
+            android:background="@drawable/costum_button_popup"
             android:textSize="20dp"/>
 
-        <TextView
-            android:id="@+id/length"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="20dp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/length"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="#fff"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:gravity="center"-->
+<!--            android:textSize="20dp"/>-->
 
-        <Button
-            android:id="@+id/edit"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ערוך מוצר"
-            android:layout_marginTop="25dp"
-            android:layout_gravity="center_horizontal"
-            android:textColor="#fff"
-            android:background="@drawable/costum_button"
-            android:textSize="20dp"/>
+<!--        <Button-->
+<!--            android:id="@+id/edit"-->
+<!--            android:layout_width="10dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="ערוך מוצר"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:textColor="#fff"-->
+<!--            android:background="@drawable/costum_button"-->
+<!--            android:textSize="20dp"/>-->
 
 
     </LinearLayout>

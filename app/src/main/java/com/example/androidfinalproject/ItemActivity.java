@@ -159,16 +159,28 @@ public class ItemActivity extends AppCompatActivity {
 
        // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
 
-        setTitle();
+       // setTitle();
 
         for (int row = 0; row != myItems.size(); row++) {
             TableRow tableRow = new TableRow(this);
-            tableRow.setLayoutParams(new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    1.0f));
 
-            table.addView(tableRow);
+            TableLayout.LayoutParams lp =
+                    new TableLayout.LayoutParams(0,
+                            TableLayout.LayoutParams.MATCH_PARENT,1);
+
+            lp.setMargins(10,5,10,5);
+         //   lp.lay = 0;
+            tableRow.setLayoutParams(lp);
+
+
+//            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+//                    TableLayout.LayoutParams.MATCH_PARENT,
+//                    TableLayout.LayoutParams.MATCH_PARENT,
+//            1.0f));
+//            tableRow.setPadding(5,5,5,5);
+           // tableRow.setBackgroundResource(R.drawable.cell_shape);
+
+            table.addView(tableRow,lp);
 
             for (int col = 0; col != COL_NUM; col++){
                 final int FINAL_COL = col;
@@ -176,18 +188,26 @@ public class ItemActivity extends AppCompatActivity {
 
                 final TextView itemInfo = new TextView(this);
 
-                itemInfo.setLayoutParams(new TableRow.LayoutParams(
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        2.0f));
-              //  itemInfo.setLayoutParams(new HorizontalScroll.);
+                TableRow.LayoutParams lpr =
+                        new TableRow.LayoutParams(1,
+                                TableRow.LayoutParams.MATCH_PARENT,1);
+
+                lpr.setMargins(5,5,5,5);
+                itemInfo.setLayoutParams(lpr);
+
+
+//                itemInfo.setLayoutParams(new TableRow.LayoutParams(
+//                        TableRow.LayoutParams.MATCH_PARENT,
+//                        TableRow.LayoutParams.MATCH_PARENT,
+//                        1));
+                //  itemInfo.setLayoutParams(new HorizontalScroll.);
 
                 String info = getColInfo(row, col);
                 //Log.d("info", info);
                 itemInfo.setText(info);
                 itemInfo.setTextSize(20f);
-                itemInfo.setBackgroundResource(R.drawable.cell_shape);
-                itemInfo.setTextColor(Color.BLACK);
+                itemInfo.setBackgroundResource(R.drawable.costume_item_list);
+                itemInfo.setTextColor(getResources().getColor(R.color.primary));
                 itemInfo.setGravity(CENTER);
                 //itemInfo.measure(0,0);
 
@@ -205,7 +225,7 @@ public class ItemActivity extends AppCompatActivity {
                     });
                 }
 
-                tableRow.addView(itemInfo);
+                tableRow.addView(itemInfo,lpr);
 
 
             }
@@ -405,46 +425,71 @@ public class ItemActivity extends AppCompatActivity {
 
         if(col == 1)
             return "" + myItems.get(row).getAmount();
-        
+
         return "";
 
     }
 
     public void setTitle()
     {
+        LinearLayout lay = findViewById(R.id.amountAndLen);
 
-            TableRow tableRow = new TableRow(this);
-            tableRow.setLayoutParams(new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    1.0f));
-            tableRow.setBackgroundColor(Color.rgb(141,216,141));
+        final TextView amount = new TextView(this);
+        final TextView len = new TextView(this);
 
-            table.addView(tableRow);
+        amount.setText("כמות");
+        len.setText("אורך");
 
-            for (int col = 0; col < 2; col++)
-            {
+        amount.setTextSize(20f);
+        len.setTextSize(20f);
 
-                final TextView itemInfo = new TextView(this);
+        amount.setBackgroundResource(R.drawable.cell_title);
+        len.setBackgroundResource(R.drawable.cell_title);
 
-                itemInfo.setLayoutParams(new TableRow.LayoutParams(
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        2.0f));
-                if(col == 0)
-                  itemInfo.setText("אורך");
-                else
-                  itemInfo.setText("כמות");
-                itemInfo.setTextSize(20f);
-                itemInfo.setBackgroundResource(R.drawable.cell_title);
-                itemInfo.setTextColor(Color.BLACK);
-                itemInfo.setGravity(CENTER);
-                //itemInfo.measure(0,0);
+        amount.setTextColor(Color.BLACK);
+        len.setTextColor(Color.BLACK);
 
-                // Make text not clip on small buttons
-                itemInfo.setPadding(0, 0, 0, 0);
+        amount.setGravity(CENTER);
+        len.setGravity(CENTER);
 
-                tableRow.addView(itemInfo);
-            }
+        // Make text not clip on small buttons
+        amount.setPadding(0,0,0,0);
+        len.setPadding(0,0,0,0);
+
+        lay.addView(len);
+        lay.addView(amount);
+//            TableRow tableRow = new TableRow(this);
+//            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+//                    TableLayout.LayoutParams.MATCH_PARENT,
+//                    TableLayout.LayoutParams.MATCH_PARENT,
+//                    1.0f));
+//            tableRow.setBackgroundColor(Color.rgb(141,216,141));
+//
+//            table.addView(tableRow);
+//
+//            for (int col = 0; col < 2; col++)
+//            {
+//
+//                final TextView itemInfo = new TextView(this);
+//
+//                itemInfo.setLayoutParams(new TableRow.LayoutParams(
+//                        TableRow.LayoutParams.MATCH_PARENT,
+//                        TableRow.LayoutParams.MATCH_PARENT,
+//                        2.0f));
+//                if(col == 0)
+//                  itemInfo.setText("אורך");
+//                else
+//                  itemInfo.setText("כמות");
+//                itemInfo.setTextSize(20f);
+//                itemInfo.setBackgroundResource(R.drawable.cell_title);
+//                itemInfo.setTextColor(Color.BLACK);
+//                itemInfo.setGravity(CENTER);
+//                //itemInfo.measure(0,0);
+//
+//                // Make text not clip on small buttons
+//                itemInfo.setPadding(0, 0, 0, 0);
+//
+//                tableRow.addView(itemInfo);
+//            }
     }
 }

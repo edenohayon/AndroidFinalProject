@@ -52,8 +52,9 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="right"
                 android:ems="10"
-                android:inputType="text"
+                android:backgroundTint="@android:color/white"
                 android:textColor="#fff"
+                android:inputType="text"
                 />
 
     </LinearLayout>
@@ -67,7 +68,7 @@
         android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#fff"
-        android:background="@drawable/costum_button"
+        android:background="@drawable/costum_button_popup"
         android:textSize="20dp"
 
         />

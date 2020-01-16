@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import static android.view.Gravity.CENTER;
@@ -44,7 +47,7 @@ dynamic buttons with table layout - may help
 https://www.youtube.com/watch?v=4MFzuP1F-xQ
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     //public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
     private final int NUM_COL = 3;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private TableRow tableRow;
     private ImageButton add;
     private List<Button> items;
-    private List<Panel> panel;
+    private List<Panel> panels;
     private Context context;
     private int itemsAdded;
 
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     boolean isPopupWarningOn;
 
     private DatabaseReference database;
+    private DatabaseReference dbLenRef;
+    //private fireBaseHandler fb;
 
     //for broadcast receiver
     private MyReceiver mReceiver;
@@ -81,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         items = new ArrayList<>();
+        panels = new ArrayList<>();
         tableLayout = findViewById(R.id.tableLayout);
 
         itemsAdded = 0;
@@ -99,8 +105,10 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+        myToolbar.setTitle("ניהול מלאי");
 
         database = FirebaseDatabase.getInstance().getReference("panel"); //Dont pass any path if you want root of the tree
+        dbLenRef = FirebaseDatabase.getInstance().getReference("lengths");
 
         context = this.getBaseContext();
 
@@ -119,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //attaching value event listener
+
+        items.clear();
+        tableLayout.removeAllViews();
+
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,20 +148,29 @@ public class MainActivity extends AppCompatActivity {
                     Button btn = new Button(context);
                    // btn.setBackgroundColor(Color.rgb(141,216,141));
                     btn.setBackgroundResource(R.drawable.costum_button);
-
-
+                    btn.setTag(item.getId());
                     btn.setText(itemName);
+
+
                     btn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showSelectPopup(v,item.getId());
+                            goToItem(v,item.getId());
                           // goToItem(v,item.getId());
 
                         }});
 
+                    btn.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            showSelectPopup(v,item.getId());
+                            return false;
+                        }
+                    });
+
                     items.add(btn);
                     //todo - maybe revers items??
-                    btn.setTag(item.getId());
+
 
                 }
                 populateTable();
@@ -170,23 +191,28 @@ public class MainActivity extends AppCompatActivity {
         int row = 0, col = 0;
         while( row < items.size() ) {
             TableRow tableRow = new TableRow(this);
-            tableRow.setLayoutParams(new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    1.0f));
-            tableLayout.addView(tableRow);
+
+            TableLayout.LayoutParams lp =
+                    new TableLayout.LayoutParams(0,
+                            TableLayout.LayoutParams.WRAP_CONTENT,1);
+
+            lp.setMargins(0,15,15,0);
+            //   lp.lay = 0;
+            tableRow.setLayoutParams(lp);
+            tableLayout.addView(tableRow,lp);
             col = 0;
 
             while(col < NUM_COL && row < items.size() )
             {
 
-                items.get(row).setLayoutParams(new TableRow.LayoutParams(
-                        TableRow.LayoutParams.WRAP_CONTENT,
-                        TableRow.LayoutParams.WRAP_CONTENT,
-                        1.0f));
+                TableRow.LayoutParams lpr =
+                        new TableRow.LayoutParams(1,
+                                TableRow.LayoutParams.WRAP_CONTENT,1);
 
+                lpr.setMargins(15,15,15,15);
+                items.get(row).setLayoutParams(lpr);
 
-                tableRow.addView(items.get(row));
+                tableRow.addView(items.get(row),lpr);
                 row++;
                 col++;
             }
@@ -291,6 +317,13 @@ public class MainActivity extends AppCompatActivity {
             itemsAdded = 0;
 
         //addItem to server
+        Intent intent = new Intent(this, MyService.class);
+
+        intent.putExtra("id",id);
+        intent.putExtra("name", panel.getName());
+
+
+        startService(intent);
         database.child(id).setValue(panel);
         //send broadcast that item added seccefully
         context.sendBroadcast(new Intent(MyReceiver.ACTION_DATABASE_CHANGED));
@@ -318,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         MenuItem menuAbout = menu.add("About");
         MenuItem menuExit = menu.add("Exit");
+        MenuItem menuProfile = menu.add("profile");
 
         menuAbout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -332,7 +366,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d("debug", "onMenuItemClick: " + item);
-                System.exit(0);
+                finishAffinity();
+                return true;
+            }
+        });
+
+        menuProfile.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.d("debug", "onMenuItemClick: " + item);
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 return true;
             }
         });
@@ -369,13 +412,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //edit button
-        Button editItem = editDialog.findViewById(R.id.edit);
-        editItem.setOnClickListener(new View.OnClickListener() {
+
+        //delete button
+        Button deleteItem = editDialog.findViewById(R.id.delete);
+        deleteItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToItem(view,id);
-
+                database.child(view.getTag().toString()).removeValue();
+                dbLenRef.child(view.getTag().toString()).removeValue();
+                editDialog.dismiss();
             }
         });
         editDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -396,5 +441,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    }
 
-}
+

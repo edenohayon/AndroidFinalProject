@@ -22,6 +22,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <TextView
+        android:id="@+id/length"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="אורך"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        />
+
         <EditText
             android:id="@+id/lengthID"
             android:layout_width="wrap_content"
@@ -33,16 +45,7 @@
             android:textColor="#fff"
             android:backgroundTint="@android:color/white" />
 
-        <TextView
-            android:id="@+id/length"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="אורך"
-            android:textColor="#fff"
-            android:textStyle="bold"
-            />
+
 
 
 
@@ -55,16 +58,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/amountID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number"
-            android:textColor="#fff"
-            android:backgroundTint="@android:color/white"/>
-
         <TextView
             android:id="@+id/amount"
             android:layout_width="50dp"
@@ -75,7 +68,15 @@
             android:textColor="#fff"
             android:textStyle="bold" />
 
-
+        <EditText
+            android:id="@+id/amountID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number"
+            android:textColor="#fff"
+            android:backgroundTint="@android:color/white"/>
 
 
     </LinearLayout>
@@ -95,7 +96,7 @@
         android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#fff"
-        android:background="@drawable/costum_button"
+        android:background="@drawable/costum_button_popup"
         android:textSize="20dp"/>
 
 

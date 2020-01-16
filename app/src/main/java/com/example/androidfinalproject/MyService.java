@@ -7,22 +7,33 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MyService extends Service {
+    DatabaseReference database;
+
+    fireBaseHandler fb = new fireBaseHandler();
+
     @Override
-
-
-    public int onStartCommand(Intent intent, int flags, int startId)
+    public int onStartCommand(final Intent intent, int flags, int startId)
     {
-
+        Log.d("debug ----", "onStartCommand: ");
         new Thread(new Runnable() {
             @Override
             public void run()
             {
 
-                while(true)
-                {
+               //update fire base
+                String name =  intent.getStringExtra("name");
+                String id = intent.getStringExtra("id");
+                Log.d("debug ---- ", "run: " + name+ " " +id);
+                Panel p = new Panel(id,name);
 
-                }
+                fb.updatePanel(id,p);
+
+
+
             }
         }).start();
         Log.d("debug","MyService onStartCommand()");

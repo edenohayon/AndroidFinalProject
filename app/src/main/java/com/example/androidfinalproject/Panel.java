@@ -8,6 +8,7 @@ public class Panel {
     public Panel(){
 
     }
+
     public Panel(String id, String name) {
         this.id = id;
         this.name = name;
