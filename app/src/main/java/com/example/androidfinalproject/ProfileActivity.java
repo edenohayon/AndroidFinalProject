@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +32,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 // refernce - https://codinginflow.com/tutorials/android/firebase-storage-upload-and-retrieve-images/part-3-image-upload
 public class ProfileActivity extends AppCompatActivity {
@@ -50,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Uri mImageUri;
 
     private StorageReference mStorageRef;
+    private StorageReference imgRef;
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth auth;
 
@@ -58,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Upload uploadedImg;
     private String imgUrl;
+    private boolean imgUrlExsist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +80,22 @@ public class ProfileActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads" );
         auth = FirebaseAuth.getInstance();
 
+        imgRef =FirebaseStorage.getInstance().getReference("uploads/images/users/" + user.getUid() + "/img.jpg");
+        Log.d("debug -----", "onCreate: " + imgRef);
 
-        mImageView.setImageResource(R.drawable.ic_boy);
+        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.with(getBaseContext()).load(uri).into(mImageView);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                mImageView.setImageResource(R.drawable.ic_boy);
+            }
+        });
+
 
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,32 +125,10 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    uploadedImg = dataSnapshot.child(user.getUid()).getValue(Upload.class);
-                    imgUrl = uploadedImg.getImageUrl();
-                    Log.d("debug ---- ", "onDataChange: " + imgUrl);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
-    }
+    
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -167,10 +162,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         final FirebaseUser user = auth.getCurrentUser();
         String userID = user.getUid();
-        String name = "test";
+        String name = "img";
 
         if (mImageUri != null) {
-            StorageReference fileReference = mStorageRef.child("images/users/" + userID + "/" + name + getFileExtension(mImageUri));
+            StorageReference fileReference = mStorageRef.child("images/users/" + userID + "/" + name +"." +getFileExtension(mImageUri));
 
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

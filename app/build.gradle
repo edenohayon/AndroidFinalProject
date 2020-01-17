@@ -32,6 +32,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.firebase:firebase-database:16.0.4'
-}
+    implementation 'com.master.android:glideimageview:1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
+    implementation 'com.squareup.picasso:picasso:2.3.3'}
 
 apply plugin: 'com.google.gms.google-services'
