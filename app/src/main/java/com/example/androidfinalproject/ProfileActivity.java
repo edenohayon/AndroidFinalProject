@@ -2,6 +2,7 @@ package com.example.androidfinalproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -92,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                mImageView.setImageResource(R.drawable.ic_boy);
+                mImageView.setImageResource(R.drawable.camera);
             }
         });
 
@@ -126,9 +127,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        Toolbar myChildToolbar = findViewById(R.id.toolbar);
+        myChildToolbar.setBackgroundResource(R.color.lightGreen);
+        setSupportActionBar(myChildToolbar);
+
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
     }
 
-    
+
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -146,7 +158,6 @@ public class ProfileActivity extends AppCompatActivity {
             mImageUri = data.getData();
             Log.d("debug ------- ", "onActivityResult: " + mImageUri);
 
-            //Picasso.with(this).load(mImageUri).into(mImageView);
             mImageView.setImageURI(mImageUri);
 
         }
@@ -165,7 +176,15 @@ public class ProfileActivity extends AppCompatActivity {
         String name = "img";
 
         if (mImageUri != null) {
-            StorageReference fileReference = mStorageRef.child("images/users/" + userID + "/" + name +"." +getFileExtension(mImageUri));
+            String fileExt = getFileExtension(mImageUri);
+            if(!fileExt.equals("jpg"))
+            {
+                Toast.makeText(ProfileActivity.this, "שגיאה. בחר קובץ אחר.", Toast.LENGTH_LONG).show();
+                mImageView.setImageResource(R.drawable.camera);
+                return;
+
+            }
+            StorageReference fileReference = mStorageRef.child("images/users/" + userID + "/" + name +"." + fileExt);
 
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -201,6 +220,12 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 }

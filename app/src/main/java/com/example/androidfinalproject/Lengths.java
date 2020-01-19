@@ -38,4 +38,9 @@ public class Lengths {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+//    public boolean equals(Double len)
+//    {
+//        return this.length == len;
+//    }
 }

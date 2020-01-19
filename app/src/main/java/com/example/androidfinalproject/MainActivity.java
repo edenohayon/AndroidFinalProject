@@ -6,14 +6,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,20 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import static android.view.Gravity.CENTER;
@@ -49,7 +39,6 @@ https://www.youtube.com/watch?v=4MFzuP1F-xQ
 
 public class MainActivity extends AppCompatActivity  {
 
-    //public static final String EXTRA_MESSAGE = "com.example.androidfinalproject.MESSAGE";
     private final int NUM_COL = 3;
     private static final String PANEL_ID = "panelID";
     private static final String PANEL_NAME = "panelName";
@@ -70,7 +59,6 @@ public class MainActivity extends AppCompatActivity  {
 
     private DatabaseReference database;
     private DatabaseReference dbLenRef;
-    //private fireBaseHandler fb;
 
     //for broadcast receiver
     private MyReceiver mReceiver;
@@ -316,14 +304,6 @@ public class MainActivity extends AppCompatActivity  {
         if(itemsAdded == NUM_COL)
             itemsAdded = 0;
 
-        //addItem to server
-        Intent intent = new Intent(this, MyService.class);
-
-        intent.putExtra("id",id);
-        intent.putExtra("name", panel.getName());
-
-
-        startService(intent);
         database.child(id).setValue(panel);
         //send broadcast that item added seccefully
         context.sendBroadcast(new Intent(MyReceiver.ACTION_DATABASE_CHANGED));
@@ -425,19 +405,6 @@ public class MainActivity extends AppCompatActivity  {
         });
         editDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         editDialog.show();
-//        //reduce button
-//        Button reduce = popupDialog.findViewById(R.id.reduce);
-//        reduce.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TextView num = popupDialog.findViewById(R.id.length);
-//
-//                int editedNum = Integer.parseInt(num.getText().toString())-1;
-//                if(editedNum != -1)
-//                    num.setText(editedNum+"");
-//            }
-//        });
-
 
 
     }

@@ -1,5 +1,6 @@
 package com.example.androidfinalproject;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -37,13 +38,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static android.view.Gravity.CENTER;
 
 /*
-* https://www.simplifiedcoding.net/firebase-realtime-database-crud/#Firebase-Realtime-Database-Video-Tutorial
-* all server method explanation are from here*/
+ * https://www.simplifiedcoding.net/firebase-realtime-database-crud/#Firebase-Realtime-Database-Video-Tutorial
+ * all server method explanation are from here*/
 
 public class ItemActivity extends AppCompatActivity {
 
@@ -54,7 +58,7 @@ public class ItemActivity extends AppCompatActivity {
     private static String CHANNEL_NAME = "Channel 1 Demo";
     private static int notificationId = 1;
 
-    private final int COL_NUM  = 2;
+    private final int COL_NUM = 2;
 
 
     private List<Lengths> myItems;
@@ -118,17 +122,17 @@ public class ItemActivity extends AppCompatActivity {
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               showAddItemPopup(v);
+                showAddItemPopup(v);
             }
         });
 
         this.context = this.getBaseContext();
         table = findViewById(R.id.tableID);
 
-       // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
+        // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
 
         setupNotificationChannel();
-      // populateTable();
+        // populateTable();
     }
 
     @Override
@@ -136,6 +140,7 @@ public class ItemActivity extends AppCompatActivity {
         super.onStart();
 
         database.addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 myItems.clear();
@@ -144,7 +149,16 @@ public class ItemActivity extends AppCompatActivity {
                     Lengths len = postSnapshot.getValue(Lengths.class);
                     myItems.add(len);
                 }
-                populateTable();
+                if(!myItems.isEmpty()) {
+                    myItems.sort(new Comparator<Lengths>() {
+                        @Override
+                        public int compare(Lengths o1, Lengths o2) {
+                            return (int)(o1.getLength() - o2.getLength());
+                        }
+                    } );
+
+                    populateTable();
+                }
             }
 
             @Override
@@ -152,37 +166,26 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
+
     private void populateTable() {
-
-       // ScrollView scrollview = (ScrollView) findViewById(R.id.ScrollView03);
-
-       // setTitle();
 
         for (int row = 0; row != myItems.size(); row++) {
             TableRow tableRow = new TableRow(this);
 
             TableLayout.LayoutParams lp =
                     new TableLayout.LayoutParams(0,
-                            TableLayout.LayoutParams.MATCH_PARENT,1);
+                            TableLayout.LayoutParams.MATCH_PARENT, 1);
 
-            lp.setMargins(10,5,10,5);
-         //   lp.lay = 0;
+            lp.setMargins(10, 5, 10, 5);
             tableRow.setLayoutParams(lp);
 
+            table.addView(tableRow, lp);
 
-//            tableRow.setLayoutParams(new TableLayout.LayoutParams(
-//                    TableLayout.LayoutParams.MATCH_PARENT,
-//                    TableLayout.LayoutParams.MATCH_PARENT,
-//            1.0f));
-//            tableRow.setPadding(5,5,5,5);
-           // tableRow.setBackgroundResource(R.drawable.cell_shape);
-
-            table.addView(tableRow,lp);
-
-            for (int col = 0; col != COL_NUM; col++){
+            for (int col = 0; col != COL_NUM; col++) {
                 final int FINAL_COL = col;
                 final int FINAL_ROW = row;
 
@@ -190,47 +193,33 @@ public class ItemActivity extends AppCompatActivity {
 
                 TableRow.LayoutParams lpr =
                         new TableRow.LayoutParams(1,
-                                TableRow.LayoutParams.MATCH_PARENT,1);
+                                TableRow.LayoutParams.MATCH_PARENT, 1);
 
-                lpr.setMargins(5,5,5,5);
+                lpr.setMargins(5, 5, 5, 5);
                 itemInfo.setLayoutParams(lpr);
 
-
-//                itemInfo.setLayoutParams(new TableRow.LayoutParams(
-//                        TableRow.LayoutParams.MATCH_PARENT,
-//                        TableRow.LayoutParams.MATCH_PARENT,
-//                        1));
-                //  itemInfo.setLayoutParams(new HorizontalScroll.);
-
                 String info = getColInfo(row, col);
-                //Log.d("info", info);
                 itemInfo.setText(info);
                 itemInfo.setTextSize(20f);
                 itemInfo.setBackgroundResource(R.drawable.costume_item_list);
                 itemInfo.setTextColor(getResources().getColor(R.color.primary));
                 itemInfo.setGravity(CENTER);
-                //itemInfo.measure(0,0);
 
                 // Make text not clip on small buttons
                 itemInfo.setPadding(0, 0, 0, 0);
 
-                //todo - change to final
-                if(col == 1) {
-                    final int finalRow = row;
-                    itemInfo.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showUpdatePopup(finalRow, myItems.get(FINAL_ROW).getId(), myItems.get(FINAL_ROW).getLength() );
-                        }
-                    });
-                }
-
-                tableRow.addView(itemInfo,lpr);
+                final int finalRow = row;
+                itemInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showUpdatePopup(finalRow, myItems.get(FINAL_ROW).getId(), myItems.get(FINAL_ROW).getLength());
+                    }
+                });
 
 
+                tableRow.addView(itemInfo, lpr);
             }
         }
-       // scrollview.addView(table);
     }
 
     private void showUpdatePopup(final int row, final String id, final double length) {
@@ -257,24 +246,23 @@ public class ItemActivity extends AppCompatActivity {
                 TextView num = popupDialog.findViewById(R.id.length);
                 int newAmount = Integer.parseInt(num.getText().toString());
 
-                if(newAmount == 0)
-                {
-                    Log.d("debug", "onClick: amount = 0 " );
+                if (newAmount == 0) {
+                    Log.d("debug", "onClick: amount = 0 ");
 
                     //todo - build method that returns the messege to be sent by item
-                   // HashMap<Lengths, Boolean> h = myItems.
+                    // HashMap<Lengths, Boolean> h = myItems.
                     showNotification("ניהול מלאי", itemName + " " + myItems.get(row).getLength() + " אזל במלאי");
 
                 }
 
-                database.child(id).setValue(new Lengths(length,newAmount,id));
+                database.child(id).setValue(new Lengths(length, newAmount, id));
                 popupDialog.dismiss();
             }
         });
 
         //display number
         TextView num = popupDialog.findViewById(R.id.length);
-        String txt = "" +myItems.get(row).getAmount();
+        String txt = "" + myItems.get(row).getAmount();
         num.setText(txt);
 
         //add button
@@ -284,8 +272,8 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TextView num = popupDialog.findViewById(R.id.length);
 
-                int editedNum = Integer.parseInt(num.getText().toString())+1;
-                num.setText(editedNum+"");
+                int editedNum = Integer.parseInt(num.getText().toString()) + 1;
+                num.setText(editedNum + "");
             }
         });
 
@@ -296,9 +284,18 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 TextView num = popupDialog.findViewById(R.id.length);
 
-                int editedNum = Integer.parseInt(num.getText().toString())-1;
-                if(editedNum != -1)
-                    num.setText(editedNum+"");
+                int editedNum = Integer.parseInt(num.getText().toString()) - 1;
+                if (editedNum != -1)
+                    num.setText(editedNum + "");
+            }
+        });
+
+        Button delete = popupDialog.findViewById(R.id.btnDelete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                database.child(id).removeValue();
+                popupDialog.dismiss();
             }
         });
 
@@ -307,19 +304,16 @@ public class ItemActivity extends AppCompatActivity {
 
     }
 
-    private void setupNotificationChannel()
-    {
+    private void setupNotificationChannel() {
         // 1. Get reference to Notification Manager
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // 2. Create Notification Channel ONLY ONEs.
         //    Need for Android 8.0 (API level 26) and higher.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //Toast.makeText(this, "Notification Channel created!", Toast.LENGTH_LONG).show();
             //Create channel only if it is not already created
-            if (notificationManager.getNotificationChannel(CHANNEL_ID) == null)
-            {
+            if (notificationManager.getNotificationChannel(CHANNEL_ID) == null) {
                 NotificationChannel notificationChannel = new NotificationChannel(
                         CHANNEL_ID,
                         CHANNEL_NAME,
@@ -330,10 +324,9 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
-    public void showNotification(String notificationTitle, String notificationText)
-    {
+    public void showNotification(String notificationTitle, String notificationText) {
         Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Build Notification with NotificationCompat.Builder
         // on Build.VERSION < Oreo the notification avoid the CHANEL_ID
@@ -383,10 +376,9 @@ public class ItemActivity extends AppCompatActivity {
                 final EditText amountInput = addItemDialog.findViewById(R.id.amountID);
                 String amount = amountInput.getText().toString();
 
-                if(length.isEmpty() || amount.isEmpty())
-                {
+                if (length.isEmpty() || amount.isEmpty()) {
 
-                    if(!isPopupWarningOn) {
+                    if (!isPopupWarningOn) {
                         Log.d("debug", "onClick: input emty");
                         TextView warning = new TextView(addItemDialog.getContext());
                         warning.setTextColor(Color.RED);
@@ -406,11 +398,11 @@ public class ItemActivity extends AppCompatActivity {
                 newAmount = Integer.parseInt(amount);
                 newLen = Double.parseDouble(length);
                 String newID = database.push().getKey();
-                Lengths l = new Lengths(newLen,newAmount ,newID);
+                Lengths l = new Lengths(newLen, newAmount, newID);
                 database.child(newID).setValue(l);
 
                 addItemDialog.dismiss();
-               // table.addView();
+                // table.addView();
             }
         });
         addItemDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -420,76 +412,19 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private String getColInfo(int row, int col) {
-        if(col == 0)
+        if (col == 0)
             return "" + myItems.get(row).getLength();
 
-        if(col == 1)
+        if (col == 1)
             return "" + myItems.get(row).getAmount();
 
         return "";
 
     }
 
-    public void setTitle()
-    {
-        LinearLayout lay = findViewById(R.id.amountAndLen);
 
-        final TextView amount = new TextView(this);
-        final TextView len = new TextView(this);
-
-        amount.setText("כמות");
-        len.setText("אורך");
-
-        amount.setTextSize(20f);
-        len.setTextSize(20f);
-
-        amount.setBackgroundResource(R.drawable.cell_title);
-        len.setBackgroundResource(R.drawable.cell_title);
-
-        amount.setTextColor(Color.BLACK);
-        len.setTextColor(Color.BLACK);
-
-        amount.setGravity(CENTER);
-        len.setGravity(CENTER);
-
-        // Make text not clip on small buttons
-        amount.setPadding(0,0,0,0);
-        len.setPadding(0,0,0,0);
-
-        lay.addView(len);
-        lay.addView(amount);
-//            TableRow tableRow = new TableRow(this);
-//            tableRow.setLayoutParams(new TableLayout.LayoutParams(
-//                    TableLayout.LayoutParams.MATCH_PARENT,
-//                    TableLayout.LayoutParams.MATCH_PARENT,
-//                    1.0f));
-//            tableRow.setBackgroundColor(Color.rgb(141,216,141));
-//
-//            table.addView(tableRow);
-//
-//            for (int col = 0; col < 2; col++)
-//            {
-//
-//                final TextView itemInfo = new TextView(this);
-//
-//                itemInfo.setLayoutParams(new TableRow.LayoutParams(
-//                        TableRow.LayoutParams.MATCH_PARENT,
-//                        TableRow.LayoutParams.MATCH_PARENT,
-//                        2.0f));
-//                if(col == 0)
-//                  itemInfo.setText("אורך");
-//                else
-//                  itemInfo.setText("כמות");
-//                itemInfo.setTextSize(20f);
-//                itemInfo.setBackgroundResource(R.drawable.cell_title);
-//                itemInfo.setTextColor(Color.BLACK);
-//                itemInfo.setGravity(CENTER);
-//                //itemInfo.measure(0,0);
-//
-//                // Make text not clip on small buttons
-//                itemInfo.setPadding(0, 0, 0, 0);
-//
-//                tableRow.addView(itemInfo);
-//            }
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public boolean containsName(final List<Lengths> list, final Double len){
+//        return list.stream().filter(num-> (num.getLength()) == (len)).findFirst().isPresent();
+//    }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg2"
+    android:background="#ffff"
     >
 
 
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:text="עדן אוחיון ונטלי אייזנשטט "
         android:textStyle="bold"
-        android:textColor="#fff"
+        android:textColor="@color/col2"
         android:textSize="25dp"
         android:layout_marginTop="40dp"/>
 
@@ -28,7 +28,7 @@
         android:text="2020"
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
-        android:textColor="#fff"
+        android:textColor="@color/col2"
         android:textSize="25dp"/>
 
     <ImageView

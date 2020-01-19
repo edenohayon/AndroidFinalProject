@@ -9,12 +9,23 @@
     tools:context=".LoginActivity">
 
     <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="15dp"
+        android:text="ברוכים הבאים"
+        android:textColor="@color/col2"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="20dp"
-        android:text="טלפון" />
+        android:text="מייל" />
 
     <EditText
         android:id="@+id/email"
@@ -38,7 +49,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ems="10"
-        android:hint="סיסמא"
         android:inputType="textPassword"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="174dp" />
@@ -49,8 +59,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="20dp"
-        android:text="התחבר" />
+        android:layout_marginTop="25dp"
+        android:background="@color/col2"
+        android:padding="15dp"
+        android:text="התחבר"
+        android:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+    <TextView
+        android:id="@+id/forgotPass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="שכחתי סיסמה"
+        android:textColor="@color/col2" />
 
 
 </LinearLayout>
